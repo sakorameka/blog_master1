@@ -1,0 +1,88 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block content  %}
+
+
+<div class="container">
+  <div class="row">
+
+     <!-- Latest Posts -->
+        <main class="posts-listing col-lg-8"> 
+          <div class="container">
+            <div class="row">
+              <!-- post -->
+
+              {% if  obj_list %}
+              {% for post in obj_list %}
+              <div class="post col-xl-6">
+                <div class="post-thumbnail"><a href="{{post.get_absolute_url}}"><img src=" {{post.header_img.url }}" alt="..." class="img-fluid"></a></div>
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+                    <div class="date meta-last">{% now "jS F Y" %}</div>
+                    <div class="category">
+                    {% for category in post.categories.all %}
+                      <a href="#">{{category}}</a>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <a href="{{post.get_absolute_url}}"> 
+                    
+                    <h3 class="h4">{{post.title}}</h3>
+                  </a>
+                  <p class="text-muted">{{post.text}}</p>
+                  <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
+                      <div class="avatar"><img src="{{post.author.profile_pic.url}}" alt="..." class="img-fluid"></div>
+                      <div class="title"><span>{{post.author.user.username}}</span></div></a>
+                    <div class="date"><i class="icon-clock"></i>{{post.created_at }}</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>{{post.get_comment_count}}</div>
+                  </footer>
+                </div>
+              </div>
+              {% endfor %}
+              
+              
+            </div>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-template d-flex justify-content-center">
+                {% if obj_list.has_previous %}
+                <li class="page-item"><a href="?page={{obj_list.previous_page_number}}" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+                {% endif %}
+
+                {% for i in  obj_list.paginator.page_range %}
+                {% if obj_list.number == i %}
+                
+                <li class="page-item"><a href="?page={{i}}" class="page-link active">{{i}}</a></li> 
+                {% else %}
+                <li class="page-item"><a href="?page={{i}}" class="page-link">{{i}}</a></li>
+                {% endif %}
+                  
+                {% endfor %}
+
+
+
+                {% if obj_list.has_next %}
+                <li class="page-item"><a href="?page={{obj_list.next_page_number}}" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+                {% endif %}
+              </ul>
+            </nav>
+
+            {% else %}
+            <div style="margin-top: 80px; display: flex; justify-content: center; align-items: center; flex-direction:column; ">
+             <span> <h1 class="display-4">No data for your query !</h1> </span>
+              <img src="{% static 'logo/nd.png' %}" class="img-responsiverounded mx-auto d-block" width="400px" alt="">
+
+            </div>
+           
+            {% endif%}
+            
+         
+
+
+          </div>
+        </main>
+     {% include 'aside.html' with lates_post=lates_post  category_count=category_count tags=tags  %}
+      </div>
+    </div>
+   
+    {% endblock content %}

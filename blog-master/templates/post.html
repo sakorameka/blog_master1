@@ -1,0 +1,138 @@
+
+    {% extends 'layout/base.html' %}
+    
+    
+    {% load static %}
+    
+    
+    {% block content  %}
+    <style>
+      p .post-body {
+    display: block;
+}
+    </style>
+    <div class="container">
+      <div id="fb-root"></div>
+      
+       
+      <!-- <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fweb.facebook.com%2FUsman8279%2Fposts%2F1559324984246426&show_text=true&width=552&height=642&appId" width="552" height="642" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe> -->
+      
+      <div class="row">
+ 
+        <!-- Latest Posts -->
+        <main class="post blog-post col-lg-8"> 
+          <div class="container">
+            <div class="post-single">
+              <div class="post-thumbnail"><img src="{{post.header_img.url}}" alt="..." class="img-fluid"></div>
+              <div class="post-details">
+                <div class="post-meta d-flex justify-content-between">
+                  <div class="category">
+                  {% for cat in post.categories.all %}
+                    <a href="{% url 'category' cat %}">{{cat}}</a>
+                   {% endfor %}
+                  </div>
+                </div>
+                <h1>{{post.title}}<a href="#"><i class="fa fa-bookmark-o"></i></a></h1>
+                <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#" class="author d-flex align-items-center flex-wrap">
+                    <div class="avatar"><img src="{{post.author.profile_pic.url}}" alt="..." class="img-fluid"></div>
+                    <div class="title"><span>{{post.author.user.username}}</span></div></a>
+                  <div class="d-flex align-items-center flex-wrap">       
+                    <div class="date"><i class="icon-clock"></i>{{post.created_at | timesince}}</div>
+                    <div class="views"><i class="icon-eye"></i> {{post.views}}</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>{{post.get_comment_count}}</div>
+                  </div>
+                </div>
+                <div class="post-body" style="width: 100%;  overflow: hidden;">
+                  <p class="lead">{{post.text}}</p>
+
+                  {{post.content |safe }}
+
+                  <hr>
+                
+
+                 
+                  <!-- <blockquote class="blockquote">
+
+
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</p>
+                    <footer class="blockquote-footer">Someone famous in
+                      <cite title="Source Title">Source Title</cite>
+                    </footer>
+                  </blockquote> -->
+
+                </div>
+                <div class="post-tags">
+                  {% for tag in post.tags.all %}
+                  <a  class="tag">#{{tag}}</a>
+                  {% endfor %}
+                </div>
+                <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
+                  
+                  {% if post.prev_post %}
+                  <a href="{{post.prev_post.get_absolute_url }}" class="prev-post text-left d-flex align-items-center">
+                    <div class="icon prev"><i class="fa fa-angle-left"></i></div>
+                    <div class="text"><strong class="text-primary">Previous Post </strong>
+                      <h6>{{post.prev_post}}</h6>
+                    </div></a>
+                    {% endif %}
+                    
+                    {% if post.next_post %}
+                    <a href="{{post.next_post.get_absolute_url}}" class="next-post text-right d-flex align-items-center justify-content-end">
+                      <div class="text"><strong class="text-primary">Next Post </strong>
+                        <h6>{{post.next_post.title}}</h6>
+                      </div>
+                      <div class="icon next"><i class="fa fa-angle-right">   </i></div></a>
+                      {% endif %}
+                  
+                  </div>
+                <div class="post-comments">
+                  <header>
+                    <h3 class="h6">Post Comments<span class="no-of-comments">({{post.get_comment_count}})</span></h3>
+                  </header>
+                  {% for comment in  post.comments.all %}
+                  <div class="comment">
+                    <div class="comment-header d-flex justify-content-between">
+                      <div class="user d-flex align-items-center">
+                        <div class="image"><img src="{% static 'img/user.svg' %}" alt="..." class="img-fluid rounded-circle"></div>
+                        <div class="title"><strong>{{comment.name}}</strong><span class="date">{{comment.timestamp | date}}</span></div>
+                      </div>
+                    </div>
+                    <div class="comment-body">
+                      <p>{{comment.comment_text}}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                
+                </div>
+                <div class="add-comment">
+                  <header>
+                    <h3 class="h6">Leave a reply</h3>
+                  </header>
+                  <form action="{% url 'comment' post.slug %}" method="POST" class="commenting-form">
+                    <div class="row">
+                      {% csrf_token %}
+                      <div class="form-group col-md-6">
+                        <input type="text" name="name" id="username" placeholder="Name" class="form-control">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <input type="email" name="email" id="useremail" placeholder="Email Address (will not be published)" class="form-control">
+                      </div>
+                      <div class="form-group col-md-12">
+                        <textarea name="comment" id="usercomment" placeholder="Type your comment" class="form-control"></textarea>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-secondary">Submit Comment</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        {% include 'aside.html' with lates_post=lates_post  category_count=category_count  tags=tags %}
+      </div>
+    </div>
+
+
+    {% endblock content %}
